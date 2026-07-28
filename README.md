@@ -1,124 +1,67 @@
-# social-media-influencer-selection-system
+# ML-Based Influencer Recommendation System
 
-A data-driven system to **discover, analyze, score, cluster, and recommend YouTube influencers** based on niche, engagement, reach, and brand goals.
+An end-to-end machine learning pipeline that collects, scores, clusters, and
+recommends YouTube influencers for brand marketing campaigns — built to help
+brands find the right creator partnerships based on niche, budget, and
+campaign goals.
 
-## 🚀 Overview
+## Overview
 
-This project builds a complete pipeline to:
+The system pulls channel data directly from the YouTube Data API, engineers
+features that capture influencer quality (not just raw size), scores and
+segments influencers fairly *within* their subscriber tier, and layers in NLP
+and classification to power a brand-facing recommendation engine.
 
-- 📡 Fetch YouTube channel data using YouTube Data API  
-- 🧹 Clean and preprocess influencer data  
-- 📊 Engineer meaningful features (engagement, posting frequency, etc.)  
-- 🏷️ Categorize influencers into tiers (Micro, Macro, Mega)  
-- ⭐ Score influencers using a weighted ML-based approach  
-- 🧠 Cluster influencers within each tier (KMeans + validation metrics)  
-- 🎯 Recommend influencers based on brand requirements  
+## Pipeline
 
----
-## 🛠️ Tech Stack
+1. **Data Collection** — Queried the YouTube Data API v3 across 20 content
+   niches (Fitness, Tech, Food, etc.) using multiple search variants per
+   niche, with multi-key rotation to handle API quota limits.
+2. **Data Cleaning** — Filtered out inactive/low-signal channels (minimum
+   subscriber, view, and video-count thresholds), deduplicated on channel ID,
+   and standardized inconsistent date formats.
+3. **Feature Engineering** — Computed `avg_views_per_video`, a
+   log-transformed `engagement_rate`, `account_age_years`, and
+   `posting_frequency` from raw channel stats.
+4. **Tiering & Scoring** — Bucketed influencers into Nano / Micro / Macro /
+   Mega tiers by subscriber count, then computed a weighted
+   `influencer_score` using MinMax scaling **within each tier**, so smaller
+   creators are ranked fairly against peers their own size rather than
+   against mega-influencers.
+5. **Clustering** — Ran K-Means within each tier (Micro/Macro/Mega),
+   selecting the optimal K via a 3-metric voting system (Silhouette,
+   Davies-Bouldin, Calinski-Harabasz), then labeled clusters by behavior
+   (e.g. "High Reach", "Niche Creators", "Frequent Posters").
+6. **NLP** — Cleaned channel descriptions and applied sentiment analysis
+   (TextBlob) and TF-IDF-based keyword extraction.
+7. **Classification** — Trained an XGBoost classifier to predict an
+   influencer's cluster label from numeric and text-derived features,
+   allowing new/unseen channels to be scored without re-running clustering.
+8. **Recommendation Engine** — Built a function that filters influencers by
+   niche, country, and budget (mapped to affordable tiers), matches campaign
+   goals to relevant clusters, and ranks results using a blend of
+   `influencer_score` and TF-IDF cosine similarity against a brand's
+   free-text campaign brief.
 
-- **Python**
-- **Pandas, NumPy** → Data processing  
-- **Scikit-learn** → Scaling, scoring, clustering  
-- **Matplotlib, Seaborn** → Visualization  
-- **YouTube Data API v3** → Data collection  
+## Tech Stack
 
----
+Python, pandas, NumPy, scikit-learn (MinMaxScaler, KMeans, TF-IDF, cosine
+similarity), XGBoost, SHAP, NLTK, TextBlob, WordCloud, matplotlib, seaborn,
+YouTube Data API v3 (`google-api-python-client`)
 
-## 📂 Project Pipeline
+## Dataset
 
-### 1️⃣ Data Collection
+~4,800 channels collected across 20 niches, reduced to ~2,836 after cleaning
+and filtering.
 
-- Fetch channels across multiple niches:
-  - Fitness, Tech, Food, Travel, Beauty, Finance, Gaming, etc.
-- Extract:
-  - Subscribers  
-  - Views  
-  - Videos  
-  - Channel metadata  
+## Example Use Case
 
----
+> **Input:** Tech brand, $50,000 budget, goal = reach
+> **Output:** Top 5 influencers from the "High Reach" / "Mass Reach" clusters
+> within the Tech niche, ranked by influencer score.
 
-### 2️⃣ Data Preprocessing
+## Files
 
-- Remove invalid entries:
-  - Subscribers < 10K  
-  - Views < 50K  
-  - Videos < 5  
-- Handle missing values  
-- Remove duplicates  
-- Convert date formats  
-
----
-
-### 3️⃣ Feature Engineering
-
-New features created:
-
-- **Average Views per Video**
-- **Engagement Rate (log transformed)**
-- **Account Age (years)**
-- **Posting Frequency (videos/year)**
-
----
-
-### 4️⃣ Influencer Tier Classification
-
-| Tier  | Subscribers |
-|------|------------|
-| Nano  | <10K |
-| Micro | 10K – 100K |
-| Macro | 100K – 1M |
-| Mega  | 1M+ |
-
----
-
-### 5️⃣ Influencer Scoring
-
-Weighted scoring formula:
-
-- Engagement Rate → **35%**
-- Avg Views → **30%**
-- Subscribers → **20%**
-- Posting Frequency → **15%**
-
-✔ Log transformation applied  
-✔ Scaling done within each tier  
-
----
-
-### 6️⃣ Clustering (KMeans)
-
-Performed separately for each tier.
-
-**Features used:**
-- Subscribers  
-- Avg Views  
-- Engagement Rate  
-- Posting Frequency  
-
-**Cluster validation methods:**
-- Silhouette Score  
-- Davies-Bouldin Score  
-- Calinski-Harabasz Score  
-
----
-
-### 7️⃣ Cluster Labeling
-
-#### Micro
-- 🌱 Rising Stars  
-- 🎯 Niche Creators  
-
-#### Macro
-- 📢 High Reach  
-- 🔁 Frequent Posters  
-- 💬 High Engagement  
-
-#### Mega
-- 🌍 Mass Reach  
-- ⚠️ Low Performers  
-- 🔥 Mega Engaged  
-
----
-
+- `influencer_selection_system.ipynb` — full pipeline: data collection,
+  cleaning, feature engineering, scoring, clustering, NLP, classification,
+  and the recommendation engine
