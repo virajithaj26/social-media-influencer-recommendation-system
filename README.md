@@ -1,4 +1,4 @@
-# ML-Based Influencer Recommendation System
+# Social Media Influencer Recommendation System
 
 An end-to-end machine learning pipeline that collects, scores, clusters, and
 recommends YouTube influencers for brand marketing campaigns — built to help
