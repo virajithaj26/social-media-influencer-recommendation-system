@@ -1,0 +1,7 @@
+channel_id,channel_name,niche,country,description,subscribers,total_views,total_videos,avg_views_per_video,engagement_rate,posting_frequency,influencer_tier,cluster_label,influencer_score,predicted_cluster,cluster_confidence,cluster_mismatch,clean_desc,topic_label,sentiment_polarity,sentiment_subjectivity,top_keywords
+1,FitLife,Fitness,US,"Workout tips and routines",50000,1000000,200,5000,4.5,3,Micro,High Engagement,85,High Engagement,0.9,,"workouts and routines",fitness,0.1,0.5,"fitness,workout"
+2,TechGuru,Tech,US,"Gadget reviews and tech news",200000,5000000,500,10000,2.0,2,Macro,High Reach,80,High Reach,0.88,,"gadget reviews",tech,0.05,0.4,"tech,gadgets"
+3,FoodieFun,Food,UK,"Recipes and restaurant reviews",30000,300000,150,2000,3.2,4,Micro,Niche Creators,70,Niche Creators,0.7,,"recipes and reviews",food,0.2,0.6,"cooking,recipes"
+4,TravelWithMe,Travel,US,"Travel vlogs and tips",150000,2000000,400,5000,3.8,1,Macro,Mass Reach,78,Mass Reach,0.85,,"travel vlogs",travel,0.0,0.3,"travel,vlog"
+5,BeautyBloom,Beauty,US,"Makeup tutorials and skincare",80000,900000,300,3000,5.0,2,Micro,High Engagement,90,High Engagement,0.92,,"makeup tutorials",beauty,0.15,0.4,"beauty,makeup"
+6,EduSmart,Education,IN,"Learning videos and tutorials",100000,1500000,800,2000,1.5,5,Macro,Frequent Posters,65,Frequent Posters,0.6,,"educational content",education,0.1,0.2,"education,tutorial"
